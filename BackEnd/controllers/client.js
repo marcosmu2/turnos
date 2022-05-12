@@ -15,4 +15,22 @@ const createClient= async( req, res = response ) => {
     });
 }
 
-module.exports = {createClient}
+const getAllClient= async( req, res = response ) => {
+
+    let clientes = await Cliente.find().select("_id name phone");
+
+    res.status(200).json(clientes);
+}
+
+const deleteClient = async( req, res = response) => {
+
+    
+    await Cliente.findByIdAndDelete(req.query.id)
+
+    res.status(200).json({
+        ok:true,
+        msg:'registro borradoso'
+    });
+}
+
+module.exports = {createClient, getAllClient, deleteClient}
