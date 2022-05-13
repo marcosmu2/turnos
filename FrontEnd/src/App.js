@@ -1,24 +1,21 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Fragment, useState } from 'react';
+import { Clients } from './Clients';
+import Shifts from './Shifts';
 
 function App() {
+
+  const [View, setView] = useState(1);
+  const handleOpenShifts = () => setView(1);
+  const handleOpenClients = () => setView(2);
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Fragment>
+      <button className='btn btn-primary' onClick={handleOpenShifts}>Turnos</button>
+      <button className='btn btn-primary' onClick={handleOpenClients}>Clientes</button>
+
+      {View === 1 ? <Shifts></Shifts> : <Clients></Clients>}
+    </Fragment>
   );
 }
 
