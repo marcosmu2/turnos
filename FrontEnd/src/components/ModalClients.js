@@ -1,4 +1,5 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
+import axios from 'axios';
 
 const style = {
     modal:{
@@ -10,7 +11,8 @@ const style = {
         backgroundColor: 'white',
         border: '2px solid #000',
         boxShadow: 24,
-        padding: 30,
+        // paddingTop: 30,
+        paddingBottom: 30,
         zIndex: '2',
         borderRadius: 10
         },
@@ -42,6 +44,13 @@ export default function ModalClients(props) {
             [e.target.name]: e.target.value,
         })
     };
+    
+    const handleCheck = (e) => {
+        setClient({
+            ...client,
+            [e.target.name]: e.target.checked,
+        })
+    };
 
     //SUBMIT
     const handleSubmit = e => {
@@ -51,54 +60,49 @@ export default function ModalClients(props) {
         setClient({});
     }
 
+    // axios.post('localhost:4001/api/client/new', {
+    //     name:client.name,
+    //     phone: client.phone,
+    //     phone2: client.phone2,
+    //     address: client.address,
+    //     interest: client.interest
+    // })
+    // .then(function (res) {
+    // console.log(res);
+    // })
+    // .catch(function (err) {
+    // console.log(err);
+    // });
+
   return (
     <Fragment>
         <button className='btn btn-primary' onClick={handleOpen}>Agregar Cliente</button>
             {open === false ? null : 
                 <div
                     style={style.background}
-                    onClick={handleClose}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
                     <div style={style.modal}>
+                        <div className='position-relative'>
+                            <button 
+                                className='btn btn-danger position-absolute end-0 me-2 mt-2'
+                                onClick={handleClose}>x
+                            </button>
+                        </div>  
                         <form 
                             onSubmit={handleSubmit} 
-                            className='container'
+                            className='container px-4'
                         >
-                            <h4 className="text-center">Cliente</h4>
-                            <div className='row'>
-                                <div className='col-6'>
-                                    <input 
-                                    type="text"
-                                    placeholder="Horario Entrada"
-                                    id="entrada"
-                                    name="entrada"
-                                    value={client.entrada}
-                                    className="form-control mb-2"
-                                    onChange={handleChange}
-                                    />
-                                </div>
-                                <div className='col-6'>
-                                    <input 
-                                    type="text"
-                                    placeholder="Horario Salida"
-                                    id="salida"
-                                    name="salida"
-                                    value={client.salida}
-                                    className="form-control mb-2"
-                                    onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
+                            <h4 className="text-center mb-3 mt-4">Cliente</h4>
                             <div className='row'>
                                 <div className='col-12'>
                                     <input 
                                         type="text"
                                         placeholder="Nombre"
-                                        id="nombre"
-                                        name="nombre"
-                                        value={client.nombre}
+                                        id="name"
+                                        name="name"
+                                        value={client.name}
                                         className="form-control mb-2"
                                         onChange={handleChange}
                                     />
@@ -107,12 +111,48 @@ export default function ModalClients(props) {
                                     <input 
                                         type="text"
                                         placeholder="Teléfono"
-                                        id="telefono"
-                                        name="telefono"
-                                        value={client.telefono}
+                                        id="phone"
+                                        name="phone"
+                                        value={client.phone}
                                         className="form-control mb-2"
                                         onChange={handleChange}
                                     />
+                                </div>
+                            </div>
+                            <div className='row'>
+                                <div className='col-12'>
+                                    <input 
+                                        type="text"
+                                        placeholder="Teléfono Alternativo"
+                                        id="phone2"
+                                        name="phone2"
+                                        value={client.phone2}
+                                        className="form-control mb-2"
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div className='col-12'>
+                                    <input 
+                                        type="text"
+                                        placeholder="Dirección"
+                                        id="address"
+                                        name="address"
+                                        value={client.address}
+                                        className="form-control mb-2"
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                            <div className='row mb-3'>
+                                <div className='col-6'>
+                                    <label htmlFor="interest">Interesado en noticias:</label>
+                                </div>
+                                <div className='col-6 ps-0'>
+                                    <input 
+                                        type="checkbox" 
+                                        id='interest'
+                                        name='interest'
+                                        onChange={handleCheck}/>
                                 </div>
                             </div>
                             <div className='d-flex justify-content-end'>
