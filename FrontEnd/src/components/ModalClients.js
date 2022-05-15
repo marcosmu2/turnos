@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import axios from 'axios';
 
 const style = {
@@ -31,12 +31,15 @@ const style = {
 export default function ModalClients(props) {
 
     //State modal
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        setClient({});
+    }
 
     //State form
-    const [client, setClient ] = React.useState({})
+    const [client, setClient ] = useState({})
 
     const handleChange = (e) => {
         setClient({
