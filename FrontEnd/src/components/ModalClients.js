@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
 
 const style = {
@@ -50,29 +50,28 @@ export default function ModalClients(props) {
             ...client,
             [e.target.name]: e.target.checked,
         })
+
+        
     };
 
     //SUBMIT
     const handleSubmit = e => {
         e.preventDefault();
         console.log(client);
+        
+
+        axios.post('http://localhost:4001/api/client/new', client)
+        .then(function (res) {
+        console.log(res);
+        })
+        .catch(function (err) {
+        console.log(err);
+        });
+
         setOpen(false);
         setClient({});
     }
 
-    // axios.post('localhost:4001/api/client/new', {
-    //     name:client.name,
-    //     phone: client.phone,
-    //     phone2: client.phone2,
-    //     address: client.address,
-    //     interest: client.interest
-    // })
-    // .then(function (res) {
-    // console.log(res);
-    // })
-    // .catch(function (err) {
-    // console.log(err);
-    // });
 
   return (
     <Fragment>
@@ -91,7 +90,7 @@ export default function ModalClients(props) {
                             </button>
                         </div>  
                         <form 
-                            onSubmit={handleSubmit} 
+                            onSubmit={(e) =>{handleSubmit(e);}} 
                             className='container px-4'
                         >
                             <h4 className="text-center mb-3 mt-4">Cliente</h4>
