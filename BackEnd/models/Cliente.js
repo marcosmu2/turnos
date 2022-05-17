@@ -3,11 +3,17 @@ const { Schema, model } = require('mongoose');
 const ClienteSchema = Schema({
     name : {
         type : String,
-        require : true
+        required : true
     },
     phone : {
-        type : Number,
-        require : true
+        type : String,
+        required : true
+    },
+    phone2 : {
+        type : String
+    },
+    address : {
+        type : String
     }
 });
 
