@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const dbConnection = async() => {
     try {
-        await mongoose.connect('mongodb+srv://mern_user:ztvcH7ZPHnvirgAs@cluster0.7uktu.mongodb.net/turnos');
+        await mongoose.connect('mongodb://localhost:27017/turnos?readPreference=primary&appname=MongoDB%20Compass%20Community&ssl=false');
         console.log('db online')
     } catch (error) {
         console.log(error);
