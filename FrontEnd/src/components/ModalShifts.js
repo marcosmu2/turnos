@@ -1,4 +1,5 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
+import axios from 'axios';
 
 const style = {
     modal:{
@@ -28,34 +29,63 @@ const style = {
 
 export default function ModalShifts(props) {
 
-    //State combobox
+    //State combobox horario entrada
     const [checkIn, setCheckIn] = useState('seleccion')
     // const [checkOut, setCheckOut] = useState('')
+    const [clients, setClient] = useState([]);
 
-    const handleCheckOut = (e) =>{
-        setShift({
-            ...shift,
-            [e.target.name]: e.target.value,
-        })
-    };
+
+    // const handleCheckOut = (e) =>{
+    //     setShift({
+    //         ...shift,
+    //         [e.target.name]: e.target.value,
+    //     })
+    // };
+
+    const [idClient, setIdClient] = useState('seleccion')
 
     //State modal
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        setShift({}); 
+        setCheckIn("seleccion"); 
+        setNewTime('');
+        setPhone('');
+        setDate('')
+    }
 
+    const [date, setDate] = useState("")
+    const handleDate = (e) => {
+        setDate(
+            e.target.name= e.target.value
+        )
+    }
     //State form
     const [shift, setShift ] = useState({})
 
-    const handleChange = (e) => {
-        setShift({
-            ...shift,
-            [e.target.name]: e.target.value,
-        })
-    };
+    // const handleChange = (e) => {
+    //     setShift({
+    //         ...shift,
+    //         [e.target.name]: e.target.value,
+    //     })
+    // };
+
+    useEffect(() => {
+        axios.get('http://localhost:4001/api/client/')
+          .then(res => {
+            setClient(res.data);
+      
+          })
+          .catch(err => {
+            console.log(err);
+          })
+    }, [setIdClient])
 
     //State para llenar el valor de la salida
     const [newTime, setNewTime] = useState('')
+    const [phone, setPhone] = useState('')
     
     function horario(time){
 
@@ -81,12 +111,23 @@ export default function ModalShifts(props) {
         } 
     }
 
+    function phoneClient(id){
+
+        if(id === "seleccion"){
+            setPhone("")
+        }else{
+            const resultado = clients.find( e => e._id === id );
+            setPhone(resultado.phone)
+        }
+    }
+
     //SUBMIT
     const handleSubmit = e => {
         e.preventDefault();
         let completeShift = {
-            name: shift.name,
-            telefono: shift.phone,
+            date: date.value.split("-").reverse().join("-"),
+            name: idClient,
+            telefono: phone,
             entrada: checkIn,
             salida: newTime
         };
@@ -94,6 +135,10 @@ export default function ModalShifts(props) {
         console.log(completeShift);
         setOpen(false);
         setShift({});
+        setCheckIn("seleccion"); 
+        setNewTime('');
+        setPhone("");
+        setDate('');
     }
 
   return (
@@ -109,7 +154,7 @@ export default function ModalShifts(props) {
                         <div className='position-relative'>
                             <button 
                                 className='btn btn-danger position-absolute end-0 me-2 mt-2'
-                                onClick={() =>{handleClose(); setShift({}); setCheckIn("seleccion"); setNewTime('');}}>x
+                                onClick={handleClose}>x
                             </button>
                         </div> 
                         <form 
@@ -119,6 +164,17 @@ export default function ModalShifts(props) {
                             <h4 className="text-center mt-4">Turnos</h4>
                             <h5>Cancha 1</h5>
                             <div className='row'>
+                                <div className='col-12'>
+                                    <label htmlFor="date">Fecha</label>
+                                    <input 
+                                        type="date" 
+                                        id="date" 
+                                        name="date"
+                                        value={date}
+                                        className='form-control'
+                                        onChange={handleDate}
+                                    />
+                                </div>
                                 <div className='col-6'>
                                     <label htmlFor="entrada">Entrada:</label>
                                     <select 
@@ -140,27 +196,31 @@ export default function ModalShifts(props) {
                                     <label htmlFor="checkOut">Salida:</label>
                                     <input 
                                         type="text"
-                                        // placeholder={newTime}
                                         id="checkOut"
                                         name="checkOut"
                                         value={newTime}
                                         className="form-control mb-2"
-                                        // onChange={handleCheckOut}
                                         disabled
                                     />
                                 </div>
                             </div>
                             <div className='row'>
                                 <div className='col-12'>
-                                    <input 
-                                        type="text"
-                                        placeholder="Nombre"
+                                <label htmlFor="name">Cliente:</label>
+                                    <select 
+                                        name="select"
                                         id="name"
-                                        name="name"
-                                        value={shift.name}
-                                        className="form-control mb-2"
-                                        onChange={handleChange}
-                                    />
+                                        className='form-control mb-2'
+                                        defaultValue="seleccion"
+                                        onChange={(e) => {setIdClient(e.target.value); phoneClient(e.target.value)}}>
+                                        <option value="seleccion">Seleccione</option>
+                                        {clients.map((client) =>(
+                                            <option 
+                                                key={client._id}
+                                                value={client._id}>{client.name}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div className='col-12'>
                                     <input 
@@ -168,15 +228,15 @@ export default function ModalShifts(props) {
                                         placeholder="Teléfono"
                                         id="phone"
                                         name="phone"
-                                        value={shift.phone}
+                                        value={phone}
                                         className="form-control mb-2"
-                                        onChange={handleChange}
+                                        disabled
                                     />
                                 </div>
                             </div>
                             <div className='d-flex justify-content-end'>
                                 <button className="btn btn-primary" type="submit">Reservar</button>
-                                <button className="btn btn-danger ms-2" onClick={() =>{handleClose(); setShift({}); setCheckIn("seleccion"); setNewTime('');}}>Cancelar</button>
+                                <button className="btn btn-danger ms-2" onClick={handleClose}>Cancelar</button>
                             </div>
                             
                         </form>

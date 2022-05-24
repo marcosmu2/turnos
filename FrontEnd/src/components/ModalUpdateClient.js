@@ -31,20 +31,15 @@ const style = {
 export default function ModalClients(props) {
 
     //State modal
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
+    const [open, setOpen] = useState(props.state);
     const handleClose = () => {
         setOpen(false);
-        setHiddenName(false);
-        setHiddenPhone(false)
         setClient({});
+        props.handleModal(false);
     }
 
     //State form
-    const [client, setClient ] = useState({
-        name: "",
-        phone: "",
-    })
+    const [client, setClient ] = useState({})
 
     const handleChange = (e) => {
         setClient({
@@ -62,46 +57,27 @@ export default function ModalClients(props) {
         
     };
 
-    const[hiddenName, setHiddenName] = useState(false);
-    const[hiddenPhone, setHiddenPhone] = useState(false);
-
     //SUBMIT
     const handleSubmit = e => {
         e.preventDefault();
         console.log(client);
         
-        
 
-        if(client.name !== "" && client.phone !== ""){
-            axios.post('http://localhost:4001/api/client/new', client)
-            .then(function (res) {
-            console.log(res);
-            })
-            .catch(function (err) {
-            console.log(err);
-            });
+        axios.post('http://localhost:4001/api/client/new', client)
+        .then(function (res) {
+        console.log(res);
+        })
+        .catch(function (err) {
+        console.log(err);
+        });
 
-            setOpen(false);
-            setClient({});
-        }else{
-            if(client.name === ""){
-                setHiddenName(true)
-            }else{
-                setHiddenName(false)
-            }
-            if(client.phone === ""){
-                setHiddenPhone(true)
-            }else{
-                setHiddenPhone(false)
-            }
-        }
-        
+        setOpen(false);
+        setClient({});
     }
 
 
   return (
     <Fragment>
-        <button className='btn btn-primary' onClick={handleOpen}>Agregar Cliente</button>
             {open === false ? null : 
                 <div
                     style={style.background}
@@ -122,7 +98,6 @@ export default function ModalClients(props) {
                             <h4 className="text-center mb-3 mt-4">Cliente</h4>
                             <div className='row'>
                                 <div className='col-12'>
-                                    {hiddenName === false ? null : <p className='text-danger m-0'> * Debe tener un nombre</p>}
                                     <input 
                                         type="text"
                                         placeholder="Nombre"
@@ -134,7 +109,6 @@ export default function ModalClients(props) {
                                     />
                                 </div>
                                 <div className='col-12'>
-                                    {hiddenPhone === false ? null : <p className='text-danger m-0'> * Debe tener un Teléfono</p>}
                                     <input 
                                         type="text"
                                         placeholder="Teléfono"

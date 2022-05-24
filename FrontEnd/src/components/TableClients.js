@@ -8,6 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import axios from 'axios';
 import ModalDelete from './ModalDelete';
+import ModalUpdateClient from './ModalUpdateClient';
 
 
 
@@ -16,12 +17,13 @@ export default function BasicTable() {
   const [clients, setClient] = useState([]);
   const [id, setId] = useState("");
 
-  const [open, setOpen] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openModalUpdateClient, setModalUpdateClient] = useState(false);
 
   useEffect(() => {
     axios.get('http://localhost:4001/api/client/')
       .then(res => {
-        console.log(res.data)
+        console.log(res.data);
         setClient(res.data);
   
       })
@@ -40,19 +42,17 @@ export default function BasicTable() {
           console.log(err);
         })
   }
-  
-  
-  // function createData(name, phone, phone2, adress) {
-  //   return { name, phone, phone2, adress };
-  // }
-  
-  // const rows = [
-  //   createData('Marcos Muñoz', 35724562341, 35724564569, "San Juan 123"),
-  //   createData('Matias Fernandez', 35724564569, "", "Marconi 1698"),
-  //   createData('Juan Sanchez', 35724578323, "", ""),
-  //   createData('Emanuel Fernandez', 35724562154, 3572457823, ""),
-  //   createData('Fabio Valdez', 35724563215, "", ""),
-  // ];
+
+  function updateClient(){
+    axios.put(`http://localhost:4001/api/client/delete?id=${id}`)
+        .then(res => {
+          setClient(res);
+    
+        })
+        .catch(err => {
+          console.log(err);
+        })
+  }
   
   return (
     <Fragment>
@@ -68,20 +68,6 @@ export default function BasicTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* {clients.map((client) => (
-              <TableRow
-                key={client.name}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {client.name}
-                </TableCell>
-                <TableCell align="right">{client.phone}</TableCell>
-                <TableCell align="right">{client.phone2}</TableCell>
-                <TableCell align="right">{client.adress}</TableCell>
-                <TableCell align="right">{client.interest}</TableCell>
-              </TableRow>
-            ))} */}
             {clients.map((row) => (
               <TableRow
                 key={row._id}
@@ -92,17 +78,25 @@ export default function BasicTable() {
                 </TableCell>
                 <TableCell align="right">{row.phone}</TableCell>
                 <TableCell align="right">{row.phone2}</TableCell>
-                <TableCell align="right">{row.adress}</TableCell>
+                <TableCell align="right">{row.address}</TableCell>
                 <TableCell align="right">
-                  <button className='btn btn-primary'>Editar</button>
-                  <button className='btn btn-danger ms-1' onClick={() => {setId(row._id); setOpen(true);}}>Borrar</button>
+                  <button className='btn btn-primary' onClick={() =>{setId(row._id); setModalUpdateClient(true);}} >Editar</button>
+                  <button className='btn btn-danger ms-1' onClick={() => {setId(row._id); setOpenDeleteModal(true);}}>Borrar</button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      {open === true ? <ModalDelete state={open} handleModal={setOpen} deleteClient={deleteClient}></ModalDelete> : null}
+      {openModalUpdateClient === true ? 
+        <ModalUpdateClient 
+          state={openModalUpdateClient} 
+          handleModal={setModalUpdateClient}
+          
+          
+          >  
+        </ModalUpdateClient> : null}
+      {openDeleteModal === true ? <ModalDelete state={openDeleteModal} handleModal={setOpenDeleteModal} deleteClient={deleteClient}></ModalDelete> : null}
     </Fragment>
   );
 }

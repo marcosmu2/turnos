@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { Clients } from './Clients';
 import Shifts from './Shifts';
-
 function App() {
 
   const [View, setView] = useState(1);

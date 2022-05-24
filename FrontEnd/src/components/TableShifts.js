@@ -62,8 +62,16 @@ export default function MyTableShifts(props) {
               <TableCell component="th" scope="row">
                 {row.time}
               </TableCell>
-              <TableCell>{row.client1}</TableCell>
-              <TableCell>{row.client2}</TableCell>
+              <TableCell>
+                <div className='d-grid gap-2'>
+                  <button className='btn btn-success'>Cliente 1</button>  
+                </div>
+              </TableCell>
+              <TableCell>
+                <div className='d-grid gap-2'>
+                  <button className='btn btn-success'>Cliente 2</button>  
+                </div> 
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

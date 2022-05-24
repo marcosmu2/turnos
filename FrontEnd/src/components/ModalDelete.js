@@ -41,13 +41,6 @@ export default function ModalDelete(props) {
     const handleSubmit = e => {
         e.preventDefault();
 
-        // axios.post('http://localhost:4001/api/client/new', client)
-        // .then(function (res) {
-        // console.log(res);
-        // })
-        // .catch(function (err) {
-        // console.log(err);
-        // });
         props.deleteClient();
         setOpen(false);
     }
