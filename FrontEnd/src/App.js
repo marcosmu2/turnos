@@ -1,6 +1,10 @@
 import React, { Fragment, useState } from 'react';
-import { Clients } from './Clients';
-import Shifts from './Shifts';
+import {ClientsView} from './ClientsView';
+import ShiftsView from './ShiftsView';
+
+//Redux
+import { Provider } from 'react-redux';
+import store from './store';
 function App() {
 
   const [View, setView] = useState(1);
@@ -10,10 +14,12 @@ function App() {
 
   return (
     <Fragment>
-      <button className='btn btn-primary' onClick={handleOpenShifts}>Turnos</button>
-      <button className='btn btn-primary' onClick={handleOpenClients}>Clientes</button>
+      <Provider store={store}>
+        <button className='btn btn-primary' onClick={handleOpenShifts}>Turnos</button>
+        <button className='btn btn-primary' onClick={handleOpenClients}>Clientes</button>
 
-      {View === 1 ? <Shifts></Shifts> : <Clients></Clients>}
+        {View === 1 ? <ShiftsView></ShiftsView> : <ClientsView></ClientsView>}
+      </Provider>
     </Fragment>
   );
 }

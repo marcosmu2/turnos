@@ -1,5 +1,9 @@
 import React, { Fragment, useState } from 'react';
-import axios from 'axios';
+
+//redux
+import { useDispatch } from 'react-redux';
+import { deleteClientsAction } from '../../actions/clientsActions';
+
 
 const style = {
     modal:{
@@ -37,11 +41,13 @@ export default function ModalDelete(props) {
         props.handleModal(false);
     }
 
+    const dispatch = useDispatch()
+    
     //SUBMIT
     const handleSubmit = e => {
         e.preventDefault();
 
-        props.deleteClient();
+        dispatch(deleteClientsAction(props.id));
         setOpen(false);
     }
 

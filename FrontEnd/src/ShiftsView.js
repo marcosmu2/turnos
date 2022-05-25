@@ -1,9 +1,8 @@
 import React, { Fragment } from 'react';
-import MyDatePicker from './components/DataPicker';
-import ModalShifts from './components/ModalShifts';
-import MyTableShifts from './components/TableShifts';
+import ModalShifts from './components/Shifts/ModalShifts';
+import TableShifts from './components/Shifts/TableShifts';
 
-function Shifts() {
+function ShiftsView() {
 
     let arrayTime = [];
 
@@ -36,7 +35,9 @@ function Shifts() {
             <div className='container m-0'>
                 <div className='row'>
                     <div className='col-12'>
-                        <MyDatePicker></MyDatePicker>
+                        <input 
+                            type="date"
+                            className='form-control' />
                     </div>
                     <div className='col-12 my-3'>
                         <ModalShifts arrayTime={arrayTime}></ModalShifts>
@@ -44,9 +45,9 @@ function Shifts() {
                 </div>
             </div>
 
-            <MyTableShifts arrayTime={arrayTime}></MyTableShifts>
+            <TableShifts arrayTime={arrayTime}></TableShifts>
         </Fragment>
     );
 }
 
-export default Shifts;
+export default ShiftsView;

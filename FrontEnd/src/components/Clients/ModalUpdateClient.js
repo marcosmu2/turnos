@@ -1,5 +1,7 @@
 import React, { Fragment, useState } from 'react';
-import axios from 'axios';
+
+//redux
+import {useDispatch, useSelector} from 'react-redux';
 
 const style = {
     modal:{
@@ -30,49 +32,57 @@ const style = {
 
 export default function ModalClients(props) {
 
+    const client = useSelector((state) => state.clients.clientUpdate);
+
+    const [name, setName] = useState(client.name);
+    const [phone, setPhone] = useState(client.phone);
+    const [phone2, setPhone2] = useState(client.phone2);
+    const [address, setAddress] = useState(client.address);
+    const [interest, setInterest] = useState(client.interest);
+    
     //State modal
+
     const [open, setOpen] = useState(props.state);
     const handleClose = () => {
         setOpen(false);
-        setClient({});
         props.handleModal(false);
+        setHiddenName(false);
+        setHiddenPhone(false);
     }
 
-    //State form
-    const [client, setClient ] = useState({})
+    const[hiddenName, setHiddenName] = useState(false);
+    const[hiddenPhone, setHiddenPhone] = useState(false);
 
-    const handleChange = (e) => {
-        setClient({
-            ...client,
-            [e.target.name]: e.target.value,
-        })
-    };
-    
-    const handleCheck = (e) => {
-        setClient({
-            ...client,
-            [e.target.name]: e.target.checked,
-        })
-
-        
-    };
+    //acceder al state
+    const loading = useSelector((state) => state.clients.loading);
+    const error = useSelector((state) => state.clients.error);
 
     //SUBMIT
     const handleSubmit = e => {
         e.preventDefault();
-        console.log(client);
+
+
+        //validar
+        // if(name.trim() === '' || phone.trim() !== ''){
+            if(name.trim() === ''){
+                setHiddenName(true);
+            }
+            if(phone.trim() === ''){
+                setHiddenPhone(true);
+            }
+            
+        // }
+        //si no hay errores
+
+        //crear el nuevo cliente
+        // addClient({
+        //     name,
+        //     phone,
+        //     phone2,
+        //     address,
+        //     interest
+        // });
         
-
-        axios.post('http://localhost:4001/api/client/new', client)
-        .then(function (res) {
-        console.log(res);
-        })
-        .catch(function (err) {
-        console.log(err);
-        });
-
-        setOpen(false);
-        setClient({});
     }
 
 
@@ -98,25 +108,27 @@ export default function ModalClients(props) {
                             <h4 className="text-center mb-3 mt-4">Cliente</h4>
                             <div className='row'>
                                 <div className='col-12'>
+                                    {hiddenName === false ? null : <p className='text-danger m-0'> * Debe tener un nombre</p>}
                                     <input 
                                         type="text"
                                         placeholder="Nombre"
                                         id="name"
                                         name="name"
-                                        value={client.name}
+                                        value={name}
                                         className="form-control mb-2"
-                                        onChange={handleChange}
+                                        onChange={e => setName(e.target.value)}
                                     />
                                 </div>
                                 <div className='col-12'>
+                                    {hiddenPhone === false ? null : <p className='text-danger m-0'> * Debe tener un Teléfono</p>}
                                     <input 
                                         type="text"
                                         placeholder="Teléfono"
                                         id="phone"
                                         name="phone"
-                                        value={client.phone}
+                                        value={phone}
                                         className="form-control mb-2"
-                                        onChange={handleChange}
+                                        onChange={e => setPhone(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -127,9 +139,9 @@ export default function ModalClients(props) {
                                         placeholder="Teléfono Alternativo"
                                         id="phone2"
                                         name="phone2"
-                                        value={client.phone2}
+                                        value={phone2}
                                         className="form-control mb-2"
-                                        onChange={handleChange}
+                                        onChange={e => setPhone2(e.target.value)}
                                     />
                                 </div>
                                 <div className='col-12'>
@@ -138,9 +150,9 @@ export default function ModalClients(props) {
                                         placeholder="Dirección"
                                         id="address"
                                         name="address"
-                                        value={client.address}
+                                        value={address}
                                         className="form-control mb-2"
-                                        onChange={handleChange}
+                                        onChange={e => setAddress(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -152,8 +164,9 @@ export default function ModalClients(props) {
                                     <input 
                                         type="checkbox" 
                                         id='interest'
-                                        name='interest'
-                                        onChange={handleCheck}/>
+                                        name={interest}
+                                        onChange={e => setInterest(e.target.checked)}
+                                    />
                                 </div>
                             </div>
                             <div className='d-flex justify-content-end'>

@@ -1,8 +1,8 @@
 import React, {Fragment} from 'react'
-import ModalClients from './components/ModalClients'
-import TableClients from './components/TableClients'
+import ModalClients from './components/Clients/ModalClients'
+import TableClients from './components/Clients/TableClients'
 
-export const Clients = () => {
+export const ClientsView = () => {
   return (
     <Fragment>
         <h2 className='text-center'>Clientes</h2>

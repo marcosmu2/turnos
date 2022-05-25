@@ -1,5 +1,8 @@
 import React, { Fragment, useState } from 'react';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+
+//Actions redux
+import { addNewClientAction } from '../../actions/clientsActions';
 
 const style = {
     modal:{
@@ -30,71 +33,74 @@ const style = {
 
 export default function ModalClients(props) {
 
+    
+
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [phone2, setPhone2] = useState('');
+    const [address, setAddress] = useState('');
+    const [interest, setInterest] = useState(null);
+    
     //State modal
+
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => {
         setOpen(false);
         setHiddenName(false);
-        setHiddenPhone(false)
-        setClient({});
+        setHiddenPhone(false);
+        setName('');
+        setPhone('');
+        setPhone2('');
+        setAddress('');
+        setInterest(false);
     }
-
-    //State form
-    const [client, setClient ] = useState({
-        name: "",
-        phone: "",
-    })
-
-    const handleChange = (e) => {
-        setClient({
-            ...client,
-            [e.target.name]: e.target.value,
-        })
-    };
-    
-    const handleCheck = (e) => {
-        setClient({
-            ...client,
-            [e.target.name]: e.target.checked,
-        })
-
-        
-    };
 
     const[hiddenName, setHiddenName] = useState(false);
     const[hiddenPhone, setHiddenPhone] = useState(false);
 
+    //utiliza useDispatch
+    const dispatch = useDispatch();
+
+    //acceder al state
+    const loading = useSelector((state) => state.clients.loading);
+    const error = useSelector((state) => state.clients.error);
+    const clients = useSelector((state) => state.clients.clients);
+
+    //llama el action de client action
+    const addClient = (client) => dispatch( addNewClientAction(client) );
+
     //SUBMIT
     const handleSubmit = e => {
         e.preventDefault();
-        console.log(client);
-        
-        
 
-        if(client.name !== "" && client.phone !== ""){
-            axios.post('http://localhost:4001/api/client/new', client)
-            .then(function (res) {
-            console.log(res);
-            })
-            .catch(function (err) {
-            console.log(err);
-            });
+        //validar
+        // if(name.trim() === '' || phone.trim() !== ''){
+            if(name.trim() === ''){
+                setHiddenName(true);
+            }
+            if(phone.trim() === ''){
+                setHiddenPhone(true);
+            }
+            
+        // }
+        //si no hay errores
 
-            setOpen(false);
-            setClient({});
-        }else{
-            if(client.name === ""){
-                setHiddenName(true)
-            }else{
-                setHiddenName(false)
-            }
-            if(client.phone === ""){
-                setHiddenPhone(true)
-            }else{
-                setHiddenPhone(false)
-            }
-        }
+        //crear el nuevo cliente
+        addClient({
+            name,
+            phone,
+            phone2,
+            address,
+            interest
+        });
+
+        setOpen(false);
+        setName('');
+        setPhone('');
+        setPhone2('');
+        setAddress('');
+        setInterest(false);
         
     }
 
@@ -128,9 +134,9 @@ export default function ModalClients(props) {
                                         placeholder="Nombre"
                                         id="name"
                                         name="name"
-                                        value={client.name}
+                                        value={name}
                                         className="form-control mb-2"
-                                        onChange={handleChange}
+                                        onChange={e => setName(e.target.value)}
                                     />
                                 </div>
                                 <div className='col-12'>
@@ -140,9 +146,9 @@ export default function ModalClients(props) {
                                         placeholder="Teléfono"
                                         id="phone"
                                         name="phone"
-                                        value={client.phone}
+                                        value={phone}
                                         className="form-control mb-2"
-                                        onChange={handleChange}
+                                        onChange={e => setPhone(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -153,9 +159,9 @@ export default function ModalClients(props) {
                                         placeholder="Teléfono Alternativo"
                                         id="phone2"
                                         name="phone2"
-                                        value={client.phone2}
+                                        value={phone2}
                                         className="form-control mb-2"
-                                        onChange={handleChange}
+                                        onChange={e => setPhone2(e.target.value)}
                                     />
                                 </div>
                                 <div className='col-12'>
@@ -164,9 +170,9 @@ export default function ModalClients(props) {
                                         placeholder="Dirección"
                                         id="address"
                                         name="address"
-                                        value={client.address}
+                                        value={address}
                                         className="form-control mb-2"
-                                        onChange={handleChange}
+                                        onChange={e => setAddress(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -178,8 +184,9 @@ export default function ModalClients(props) {
                                     <input 
                                         type="checkbox" 
                                         id='interest'
-                                        name='interest'
-                                        onChange={handleCheck}/>
+                                        name={interest}
+                                        onChange={e => setInterest(e.target.checked)}
+                                    />
                                 </div>
                             </div>
                             <div className='d-flex justify-content-end'>
