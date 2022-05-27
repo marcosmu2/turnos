@@ -18,12 +18,12 @@ const createTurno = async( req, res = response ) => {
         });
     }
 
-    if (req.body.fecha === undefined || req.body.diaFijo === undefined){
+    if (req.body.fecha === undefined && req.body.diaFijo === undefined){
         return res.status(400).json({
             ok:false,
-            msg:'body debe contener una fecha o un dia fijo'
+            msg:'body debe contener un dia fijo o una fecha'
         });
-    }
+    } 
 
     try {
 
@@ -43,6 +43,30 @@ const createTurno = async( req, res = response ) => {
 
 }
 
+const getTurnosByDate= async( req, res = response ) => {
+    
+    try {
+        
+    const dateInp = new Date(req.query.date);
+    
+    const day = dateInp.getDay();
+    
+        const turnosFijos = await Turnos.find({diaFijo : day});
+        console.log(turnosFijos)
+        const turnosDia = await Turnos.find({fecha : dateInp })
+        console.log(turnosDia)
+
+        const turnosOut = turnosDia.concat(turnosFijos)
+    
+        res.status(200).json(turnosOut);
+
+    } catch (error) {
+        errorReturn(res, error);
+    }
+
+}
+
 module.exports = {
-    createTurno
+    createTurno,
+    getTurnosByDate
 }

@@ -41,7 +41,7 @@ const getAllClient= async( req, res = response ) => {
 
     try {
                
-        const clientes = await Cliente.find().select("_id name phone phone2 address");
+        const clientes = await Cliente.find().select("_id name phone phone2 address, interest");
     
         res.status(200).json(clientes);
 

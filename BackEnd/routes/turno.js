@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { createTurno } = require('../controllers/turnos');
+const { createTurno, getTurnosByDate } = require('../controllers/turnos');
 
 const router = Router();
 
@@ -10,10 +10,10 @@ router.post(
     createTurno 
 );
 
-// router.get(
-//     '/',
-//     getAllClient 
-// );
+router.get(
+    '/',
+    getTurnosByDate
+);
 
 // router.delete(
 //     '/delete',
