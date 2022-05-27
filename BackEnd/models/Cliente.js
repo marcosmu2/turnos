@@ -14,7 +14,11 @@ const ClienteSchema = Schema({
     },
     address : {
         type : String
+    },
+    interest: {
+        type: Boolean
     }
+
 });
 
 module.exports = model('Cliente', ClienteSchema);

@@ -14,6 +14,7 @@ app.use( express.static('public') );
 app.use( express.json() );
 
 app.use('/api/client', require('./routes/client') );
+app.use('/api/shift', require('./routes/turno') );
 // TODO: CRUD: Eventos
 
 app.listen( 4001, () => {
