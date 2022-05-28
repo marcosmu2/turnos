@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect } from 'react';
 
 
 //redux
@@ -15,20 +15,12 @@ export default function MyTable() {
   useEffect(() => {
     const loadClients = () => dispatch(getClientsAction());
     loadClients();
+    //eslint-disable-next-line
   }, [])
   
   const clients = useSelector( state => state.clients.clients)
 
-  // const [openModalUpdateClient, setModalUpdateClient] = useState(false);
-
   return (
-    //   {openModalUpdateClient === true ? 
-    //     <ModalUpdateClient 
-    //       state={openModalUpdateClient} 
-    //       handleModal={setModalUpdateClient}
-    //       >  
-    //     </ModalUpdateClient> : null}
-   
     <Fragment>
       <h2 className='text-center'>Listado de Clientes</h2>
       <table className='table table-striped'>
@@ -42,11 +34,16 @@ export default function MyTable() {
           </tr>
         </thead>
         <tbody>
-          {clients.length === 0 ? 'No hay clientes' : (
-            clients.map(client => (
+          {clients.length === 0 ? 
+            <tr>
+              <td>No hay turnos</td>
+              <td></td>
+              <td></td>
+            </tr> : 
+            (clients.map(client => (
               <Clients
                 key= {client._id}
-                client= {client}
+                client={client}
               />
             ))
           )}

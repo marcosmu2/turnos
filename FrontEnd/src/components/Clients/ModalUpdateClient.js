@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react';
 
 //redux
 import {useDispatch, useSelector} from 'react-redux';
+import { updateClientAction } from '../../actions/clientsActions';
 
 const style = {
     modal:{
@@ -33,6 +34,7 @@ const style = {
 export default function ModalClients(props) {
 
     const client = useSelector((state) => state.clients.clientUpdate);
+    const dispatch = useDispatch()
 
     const [name, setName] = useState(client.name);
     const [phone, setPhone] = useState(client.phone);
@@ -54,8 +56,8 @@ export default function ModalClients(props) {
     const[hiddenPhone, setHiddenPhone] = useState(false);
 
     //acceder al state
-    const loading = useSelector((state) => state.clients.loading);
-    const error = useSelector((state) => state.clients.error);
+    // const loading = useSelector((state) => state.clients.loading);
+    // const error = useSelector((state) => state.clients.error);
 
     //SUBMIT
     const handleSubmit = e => {
@@ -71,17 +73,18 @@ export default function ModalClients(props) {
                 setHiddenPhone(true);
             }
             
-        // }
-        //si no hay errores
+        var editedClient={
+            _id: client._id,
+            name: name,
+            phone: phone,
+            phone2: phone2,
+            address: address,
+            interest: interest
+        };
 
-        //crear el nuevo cliente
-        // addClient({
-        //     name,
-        //     phone,
-        //     phone2,
-        //     address,
-        //     interest
-        // });
+        dispatch(updateClientAction(editedClient))
+        
+        props.handleModal(false);
         
     }
 

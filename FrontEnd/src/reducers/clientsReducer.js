@@ -8,7 +8,9 @@ import {
     GET_CLIENT_DELETED,
     DELETE_CLIENT_SUCCESS,
     DELETE_CLIENT_ERROR,
-    GET_CLIENT_UPDATE
+    GET_CLIENT_UPDATE,
+    UPDATE_CLIENT_SUCCESS,
+    UPDATE_CLIENT_ERROR
 } from '../types';
 
 const initialState = {
@@ -19,7 +21,7 @@ const initialState = {
     clientUpdate: null
 }
 
-export default function(state = initialState, action){
+export default function clientReducer(state = initialState, action){
     switch(action.type){
 
         case ADD_CLIENT:
@@ -37,6 +39,7 @@ export default function(state = initialState, action){
         case ADD_CLIENT_ERROR:
         case GET_CLIENTS_ERROR:
         case DELETE_CLIENT_ERROR:
+        case UPDATE_CLIENT_ERROR:
             return{
                 ...state,
                 loading: false,
@@ -65,6 +68,13 @@ export default function(state = initialState, action){
                 ...state,
                 clientUpdate: action.payload
             }
+            case UPDATE_CLIENT_SUCCESS:
+                return{
+                    ...state,
+                    clients: state.clients.map(editClient =>
+                        editClient._id === action.payload._id ? editClient = action.payload : editClient
+                    )
+                }
         default:
             return state;
     }

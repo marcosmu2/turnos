@@ -26,50 +26,9 @@ export default function TableShifts(props) {
 
   // horario();
 
-  function createData(time, client1, client2) {
 
-    return { time, client1, client2 };
-  }
-
-  var rows = props.arrayTime.map(x => {
-    return createData(x, "cliente1", "cliente2");
-  })
 
   return (
-    // <TableContainer component={Paper}>
-    //   <Table sx={{ minWidth: 650 }} aria-label="simple table">
-    //     <TableHead>
-    //       <TableRow>
-    //         <TableCell>Horario Entrada</TableCell>
-    //         <TableCell>Cancha 1</TableCell>
-    //         <TableCell>Cancha 2</TableCell>
-    //       </TableRow>
-    //     </TableHead>
-    //     <TableBody>
-    //       {rows.map((row) => (
-            
-    //         <TableRow
-    //           key={row.time}
-    //           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-    //         >
-    //           <TableCell component="th" scope="row">
-    //             {row.time}
-    //           </TableCell>
-    //           <TableCell>
-    //             <div className='d-grid gap-2'>
-    //               <button className='btn btn-success'>Cliente 1</button>  
-    //             </div>
-    //           </TableCell>
-    //           <TableCell>
-    //             <div className='d-grid gap-2'>
-    //               <button className='btn btn-success'>Cliente 2</button>  
-    //             </div> 
-    //           </TableCell>
-    //         </TableRow>
-    //       ))}
-    //     </TableBody>
-    //   </Table>
-    // </TableContainer>
     <Fragment>
     <h2 className='text-center'>Listado de Turnos</h2>
     <table className='table table-striped'>
@@ -86,6 +45,11 @@ export default function TableShifts(props) {
           <Clients/>
           ))
         )} */}
+        <tr>
+          <td>No hay turnos</td>
+          <td></td>
+          <td></td>
+        </tr>
       </tbody>
     </table>
   </Fragment>

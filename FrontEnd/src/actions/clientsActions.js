@@ -9,6 +9,7 @@ import {
     DELETE_CLIENT_SUCCESS,
     DELETE_CLIENT_ERROR,
     GET_CLIENT_UPDATE,
+    START_UPDATE_CLIENT,
     UPDATE_CLIENT_SUCCESS,
     UPDATE_CLIENT_ERROR
 } from '../types';
@@ -101,7 +102,7 @@ const deleteClientError = () => ({
 })
 
 
-//EDITAR
+//COLOCAR PRODUCTO EN MODAL EDICION
 
 export function getClientUpdateAction(client){
     return(dispatch =>{
@@ -112,4 +113,36 @@ export function getClientUpdateAction(client){
 const getClientUpdate = (client) => ({
     type: GET_CLIENT_UPDATE,
     payload: client
+})
+
+//EDITAR
+
+export function updateClientAction(client){
+    return async (dispatch) =>{
+        dispatch( updateClient() )
+
+        try {
+            await clienteAxios.put(`/update?id=${client._id}`, client);
+
+            dispatch( updateClientSuccess(client) );
+
+        } catch (error) {
+            console.log(error);
+            dispatch(updateClientError())
+        }
+    }
+}
+
+const updateClient = () => ({
+    type: START_UPDATE_CLIENT
+})
+
+const updateClientSuccess = (client) => ({
+    type: UPDATE_CLIENT_SUCCESS,
+    payload: client
+})
+
+const updateClientError = () => ({
+    type: UPDATE_CLIENT_ERROR,
+    payload: true
 })
