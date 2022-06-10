@@ -62,10 +62,92 @@ const getTurnosByDate= async( req, res = response ) => {
     } catch (error) {
         errorReturn(res, error);
     }
+}
+
+const updateTurno = async(req, res = response) => {
+
+    if (req.body.horaEntrada === undefined){
+        return res.status(400).json({
+            ok:false,
+            msg:'body debe contener hora de entrada'
+        });
+    }
+    
+    if (req.body.idCancha === undefined){
+        return res.status(400).json({
+            ok:false,
+            msg:'body debe contener un id de cancha'
+        });
+    }
+
+    if (req.body.fecha === undefined && req.body.diaFijo === undefined){
+        return res.status(400).json({
+            ok:false,
+            msg:'body debe contener un dia fijo o una fecha'
+        });
+    } 
+
+    let turnoBody = {...req.body};
+    const turnoId = req.query.id;
+
+    try {
+        const turno = await Turnos.findById( turnoId );
+
+        if(turno != null){
+
+            await Turnos.findByIdAndUpdate({ _id: turnoId }, turnoBody);
+            
+            res.status(200).json({
+                ok:true,
+                msg:'registro actualizado con exito'
+            });
+        }else{
+            res.status(400).json({
+                ok:false,
+                msg:'no existe el registro que intenta actualizar'
+            });
+        }
+
+    } catch (error) {
+        errorReturn(res, error);
+    }
 
 }
 
+
+const deleteTurno = async( req, res = response) => {
+
+    const turnoId = req.query.id;
+
+    try {
+
+        const turno = await Turnos.findById( turnoId );
+
+        if(turno != null){
+            await Turnos.findByIdAndDelete(turnoId)
+        
+            res.status(200).json({
+                    ok:true,
+                    msg:'registro borrado con exito'
+                });
+        }else{
+            res.status(400).json({
+                ok:false,
+                msg:'no existe el registro que intenta borrar'
+            });
+        }
+        
+    } catch (error) {
+        errorReturn(res, error);
+    }
+
+    
+}
+
+
 module.exports = {
     createTurno,
-    getTurnosByDate
+    getTurnosByDate,
+    updateTurno,
+    deleteTurno
 }
