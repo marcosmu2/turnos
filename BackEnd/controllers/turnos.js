@@ -51,12 +51,11 @@ const getTurnosByDate= async( req, res = response ) => {
     
     const day = dateInp.getDay();
     
-        const turnosFijos = await Turnos.find({diaFijo : day});
-        console.log(turnosFijos)
-        const turnosDia = await Turnos.find({fecha : dateInp })
-        console.log(turnosDia)
+        const turnosFijos = await Turnos.find({diaFijo : day}).populate('client');
 
-        const turnosOut = turnosDia.concat(turnosFijos)
+        const turnosDia = await Turnos.find({fecha : dateInp }).populate('client');
+
+        const turnosOut = turnosDia.concat(turnosFijos);
     
         res.status(200).json(turnosOut);
 
