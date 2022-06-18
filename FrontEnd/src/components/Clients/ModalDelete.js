@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 //redux
 import { useDispatch } from 'react-redux';
@@ -52,7 +53,7 @@ export default function ModalDelete(props) {
     }
 
 
-  return (
+  return createPortal(
     <Fragment>
             {open === false ? null : 
                 <div
@@ -87,6 +88,7 @@ export default function ModalDelete(props) {
                     </div>  
                 </div>
             }
-    </Fragment>
+    </Fragment>,
+    document.getElementById('portal')
   );
 }

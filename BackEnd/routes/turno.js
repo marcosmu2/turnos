@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { createTurno, getTurnosByDate } = require('../controllers/turnos');
+const { createTurno, getTurnosByDate, updateTurno, deleteTurno } = require('../controllers/turnos');
 
 const router = Router();
 
@@ -15,14 +15,14 @@ router.get(
     getTurnosByDate
 );
 
-// router.delete(
-//     '/delete',
-//     deleteClient 
-// );
+router.delete(
+    '/delete',
+    deleteTurno 
+);
 
-// router.put(
-//     '/update',
-//     updateClient 
-// );
+router.put(
+    '/update',
+    updateTurno 
+);
 
 module.exports = router;
