@@ -11,7 +11,6 @@ function MenuHamburguesa({menu, mostrarMenu}) {
                 src={btnHamburguesa} 
                 alt="" 
                 width="60" 
-                menu={menu}
                 onClick={() => mostrarMenu(!menu)}/>
         </Fragment>
     )
