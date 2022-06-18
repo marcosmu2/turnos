@@ -1,32 +1,30 @@
-import {React, Fragment} from 'react';
+import {React, Fragment, useEffect} from 'react';
+import Shifts from './Shifts';
+
+//redux
+import { useDispatch, useSelector } from 'react-redux';
+import { getClientsAction } from '../../actions/clientsActions';
 
 export default function TableShifts(props) {
 
-  // let arrayTime = [];
+  const dispatch = useDispatch();
+  const entities = useSelector(state => state.shifts.entities);
+  const entitiesName = useSelector(state => state.shifts.entitiesName);
+  const shifts = useSelector(state => state.shifts.shifts);
 
-  // function horario(){
+  
+  var rows = [];
+  for (let i = 1; i < entities+1; i++) {
+      rows.push(
+        <th scope="col">{entitiesName} {i}</th>
+      );
+  }
 
-  //   var time = new Date();  
-  //   time.setHours(8,0,0,0);
-
-  //                   //devuelve solo fecha y hora formateada
-  //   arrayTime.push((time.getHours()<10?('0'+time.getHours()):time.getHours()) + ":" + (time.getMinutes()<10?('0'+time.getMinutes()):time.getMinutes()));
-    
-  //   var hours = time.getHours();
-
-  //   while(hours < 23){
-  //     hours = hours + 1.5;
-  //     time.setMinutes(time.getMinutes()+90);
-
-  //     arrayTime.push((time.getHours()<10?('0'+time.getHours()):time.getHours()) + ":" + (time.getMinutes()<10?('0'+time.getMinutes()):time.getMinutes()));
-  //   }
-    
-  //   return arrayTime;
-  // }
-
-  // horario();
-
-
+  useEffect(() => {
+    const loadClients = () => dispatch(getClientsAction());
+    loadClients();
+    //eslint-disable-next-line
+  }, [])
 
   return (
     <Fragment>
@@ -35,21 +33,29 @@ export default function TableShifts(props) {
       <thead className=''>
         <tr>
           <th scope="col">Horario de Entrada</th>
-          <th scope="col">Cancha 1</th>
-          <th scope="col">Cancha 2</th>
+          {rows}
         </tr>
       </thead>
       <tbody>
-        {/* {clients.length === 0 ? 'No hay clientes' : (
-          clients.map(clients => (
-          <Clients/>
+        {props.arrayTime.length === 0 ? 
+          <tr>
+            <td>No hay turnos</td>
+            <td></td>
+            <td></td>
+          </tr> : 
+          (props.arrayTime.map(hour => (
+
+            <tr>
+              <td>{hour}</td>
+              <Shifts
+                hour = {hour}
+                shifts = {shifts}
+              />
+            </tr>
+            
           ))
-        )} */}
-        <tr>
-          <td>No hay turnos</td>
-          <td></td>
-          <td></td>
-        </tr>
+        )}
+        
       </tbody>
     </table>
   </Fragment>

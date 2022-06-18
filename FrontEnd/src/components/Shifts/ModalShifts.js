@@ -1,5 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import axios from 'axios';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { addNewShiftAction } from '../../actions/shiftsActions';
 
 const style = {
     modal:{
@@ -31,16 +33,24 @@ export default function ModalShifts(props) {
 
     //State combobox horario entrada
     const [checkIn, setCheckIn] = useState('seleccion')
-    // const [checkOut, setCheckOut] = useState('')
-    const [clients, setClient] = useState([]);
+    const [fixed, setFixed] = useState(null);
+    // const [clients, setClient] = useState([]);
 
+    const dispatch = useDispatch();
 
-    // const handleCheckOut = (e) =>{
-    //     setShift({
-    //         ...shift,
-    //         [e.target.name]: e.target.value,
-    //     })
-    // };
+    const clients = useSelector( state => state.clients.clients)
+
+    const entitiesName = useSelector( state => state.shifts.entitiesName)
+    const entities = useSelector( state => state.shifts.entities)
+    const [selectedEntity, setSelectedEntity] = useState('seleccion');
+
+    var options = [];
+    for (var i = 1; i < entities+1; i++) {
+        options.push(<option 
+            key={i}
+            value={i}>{entitiesName} {i}
+        </option>);
+    }
 
     const [idClient, setIdClient] = useState('seleccion')
 
@@ -51,16 +61,18 @@ export default function ModalShifts(props) {
         setOpen(false);
         setShift({}); 
         setCheckIn("seleccion"); 
+        setSelectedEntity('seleccion')
         setNewTime('');
         setPhone('');
         setDate('')
     }
-
+    
     const [date, setDate] = useState("")
     const handleDate = (e) => {
         setDate(
             e.target.name= e.target.value
         )
+        
     }
     //State form
     const [shift, setShift ] = useState({})
@@ -72,16 +84,16 @@ export default function ModalShifts(props) {
     //     })
     // };
 
-    useEffect(() => {
-        axios.get('http://localhost:4001/api/client/')
-          .then(res => {
-            setClient(res.data);
+    // useEffect(() => {
+    //     axios.get('http://localhost:4001/api/client/')
+    //       .then(res => {
+    //         setClient(res.data);
       
-          })
-          .catch(err => {
-            console.log(err);
-          })
-    }, [setIdClient])
+    //       })
+    //       .catch(err => {
+    //         console.log(err);
+    //       })
+    // }, [setIdClient])
 
     //State para llenar el valor de la salida
     const [newTime, setNewTime] = useState('')
@@ -120,17 +132,35 @@ export default function ModalShifts(props) {
             setPhone(resultado.phone)
         }
     }
-
+    let completeShift;
+    const addShift = (completeShift) => dispatch( addNewShiftAction(completeShift) );
     //SUBMIT
     const handleSubmit = e => {
         e.preventDefault();
-        let completeShift = {
-            date: date.value.split("-").reverse().join("-"),
-            name: idClient,
-            telefono: phone,
-            entrada: checkIn,
-            salida: newTime
-        };
+        let weekDay = new Date(date);
+
+        if(fixed === true){
+            
+            addShift({
+                idCancha: selectedEntity,
+                client: idClient,
+                horaEntrada: checkIn,
+                horaSalida: newTime,
+                diaFijo: weekDay.getDay(),
+                fechaInicioFijo: date
+            }
+            )
+        }else{
+            addShift({
+                fecha: date,
+                idCancha: selectedEntity,
+                client: idClient,
+                horaEntrada: checkIn,
+                horaSalida: newTime
+            }
+            )
+        }
+        
 
         console.log(completeShift);
         setOpen(false);
@@ -162,7 +192,19 @@ export default function ModalShifts(props) {
                             className='container'
                         >
                             <h4 className="text-center mt-4">Turnos</h4>
-                            <h5>Cancha 1</h5>
+                            <div className='row mb-3'>
+                                <div className='col-6'>
+                                    <label htmlFor="fixed">Es Turno Fijo:</label>
+                                </div>
+                                <div className='col-6 ps-0'>
+                                    <input 
+                                        type="checkbox" 
+                                        id='fixed'
+                                        name={fixed}
+                                        onChange={e => setFixed(e.target.checked)}
+                                    />
+                                </div>
+                            </div>
                             <div className='row'>
                                 <div className='col-12'>
                                     <label htmlFor="date">Fecha</label>
@@ -175,7 +217,19 @@ export default function ModalShifts(props) {
                                         onChange={handleDate}
                                     />
                                 </div>
-                                <div className='col-6'>
+                                <div className='col-12 mt-1'>
+                                    <label htmlFor={entitiesName}>{entitiesName}:</label>
+                                    <select 
+                                        name={entitiesName}
+                                        id={entitiesName}
+                                        className='form-control'
+                                        defaultValue="seleccion"
+                                        onChange={(e) => setSelectedEntity(e.target.value)}>
+                                        <option value="seleccion">Seleccione</option>
+                                        {options}
+                                    </select>
+                                </div>
+                                <div className='col-6 mt-1'>
                                     <label htmlFor="entrada">Entrada:</label>
                                     <select 
                                         name="select"
@@ -192,7 +246,7 @@ export default function ModalShifts(props) {
                                         ))}
                                     </select>
                                 </div>
-                                <div className='col-6'>
+                                <div className='col-6 mt-1'>
                                     <label htmlFor="checkOut">Salida:</label>
                                     <input 
                                         type="text"
@@ -222,7 +276,7 @@ export default function ModalShifts(props) {
                                         ))}
                                     </select>
                                 </div>
-                                <div className='col-12'>
+                                <div className='col-12 mt-1'>
                                     <input 
                                         type="text"
                                         placeholder="Teléfono"
@@ -234,7 +288,7 @@ export default function ModalShifts(props) {
                                     />
                                 </div>
                             </div>
-                            <div className='d-flex justify-content-end'>
+                            <div className='d-flex justify-content-end mt-2'>
                                 <button className="btn btn-primary" type="submit">Reservar</button>
                                 <button className="btn btn-danger ms-2" onClick={handleClose}>Cancelar</button>
                             </div>

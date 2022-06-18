@@ -13,7 +13,7 @@ import {
     UPDATE_CLIENT_SUCCESS,
     UPDATE_CLIENT_ERROR
 } from '../types';
-import clienteAxios from '../config/axios'
+import clienteAxios from '../config/axios';
 
 //crear cliente
 export function addNewClientAction(client){

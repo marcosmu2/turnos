@@ -75,15 +75,25 @@ export default function ModalClients(props) {
         e.preventDefault();
 
         //validar
-        // if(name.trim() === '' || phone.trim() !== ''){
+        if(name.trim() === '' && phone.trim() === ''){
+            setHiddenName(true);
+            setHiddenPhone(true);
+            return;
+        }else{
+
+            setHiddenName(false);
+            setHiddenPhone(false);
+
             if(name.trim() === ''){
                 setHiddenName(true);
+                return;
             }
             if(phone.trim() === ''){
                 setHiddenPhone(true);
+                return;
             }
-            
-        // }
+        }
+        
         //si no hay errores
 
         //crear el nuevo cliente
@@ -101,6 +111,8 @@ export default function ModalClients(props) {
         setPhone2('');
         setAddress('');
         setInterest(false);
+        setHiddenName(false);
+        setHiddenPhone(false);
         
     }
 
@@ -142,7 +154,7 @@ export default function ModalClients(props) {
                                 <div className='col-12'>
                                     {hiddenPhone === false ? null : <p className='text-danger m-0'> * Debe tener un Teléfono</p>}
                                     <input 
-                                        type="text"
+                                        type="number"
                                         placeholder="Teléfono"
                                         id="phone"
                                         name="phone"
@@ -155,7 +167,7 @@ export default function ModalClients(props) {
                             <div className='row'>
                                 <div className='col-12'>
                                     <input 
-                                        type="text"
+                                        type="number"
                                         placeholder="Teléfono Alternativo"
                                         id="phone2"
                                         name="phone2"
