@@ -53,9 +53,11 @@ const getTurnosByDate= async( req, res = response ) => {
     
         const turnosFijos = await Turnos.find({diaFijo : day}).populate('client');
 
+        const turnosFijosFilter = turnosFijos.filter(x => x.fechaInicioFijo <= dateInp)
+
         const turnosDia = await Turnos.find({fecha : dateInp }).populate('client');
 
-        const turnosOut = turnosDia.concat(turnosFijos);
+        const turnosOut = turnosDia.concat(turnosFijosFilter);
     
         res.status(200).json(turnosOut);
 
@@ -95,12 +97,41 @@ const updateTurno = async(req, res = response) => {
 
         if(turno != null){
 
-            await Turnos.findByIdAndUpdate({ _id: turnoId }, turnoBody);
-            
-            res.status(200).json({
-                ok:true,
-                msg:'registro actualizado con exito'
+            const day =new Date(turnoBody.fecha).getDay();
+    
+            const turnoFijos = await Turnos.find({horaEntrada : turnoBody.horaEntrada, horaSalida: turnoBody.horaSalida, diaFijo : day}).populate('client');
+
+            const turno = await Turnos.find({horaEntrada : turnoBody.horaEntrada, horaSalida: turnoBody.horaSalida, fecha : turnoBody.fecha }).populate('client');
+
+            const turnosOut = turno.concat(turnoFijos);
+
+            if(turnosOut.length === 0 || (turnosOut.length === 1 && turnosOut[0].idCancha !== turnoBody.idCancha) ){
+
+                    await Turnos.findByIdAndUpdate({ _id: turnoId }, turnoBody);
+                                
+                    return res.status(200).json({
+                        ok:true,
+                        msg:'registro actualizado con exito'
+                    });
+            }
+            if(turnosOut.length === 1){
+
+                turnoBody = {...turnoBody, idCancha : (turnoBody.idCancha == 1)?2:1 }
+
+                await Turnos.findByIdAndUpdate({ _id: turnoId }, turnoBody);
+                                
+                return res.status(200).json({
+                    ok:true,
+                    msg:'registro actualizado con exito'
+                });
+            }
+
+            res.status(400).json({
+                ok:false,
+                msg:'el horario y fecha elegidos se encuentra totalmente ocupado'
             });
+
+           
         }else{
             res.status(400).json({
                 ok:false,
