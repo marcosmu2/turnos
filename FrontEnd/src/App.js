@@ -46,8 +46,25 @@ function App() {
           </div>
           : null}
         </div> 
-        <p>cambiar la tabla a fracciones</p>
-        <p>que la reserva de los turnos se haga dentro de la tabla, no en un boton "Reservar Turno" (poner botones dentro de la tabla en los turnos libres)</p>
+        
+        <h1>Falta por hacer</h1>
+        <ol>
+          <li>Armar reducer para cambiar la fecha</li>
+          <li>Recargar la tabla cuando cambie el store de turnos, para que se vea el cambio reflejado (editar, eliminar)</li>
+          <li>Probar que la edicion funcione bien</li>
+          <li>Cuando se pruebe el editar, revisar si el back devuelve un error y mostrarlo en el modal</li>
+          <li>cambiar la tabla a fracciones</li>
+        </ol>
+        
+        <h1>Errores</h1>
+        <ol>
+          <li>Borro el turno de la cancha 2, cuando quiero borrar el turno de la cancha uno en el mismo dia y horario no me deja. ME deja tocar en gregar turno en las otras filas</li>
+          <li>Creo turno cancha dos, recargo pagina, creo turno cancha uno mismo dia y hora se crea un botón de "agregar" entre el primero y seundo turno, el valor de la cancha figura como 1 dentro de ese Agregar,se desplaza al segundo turno a una 3ra "columna"</li>
+          <li>Despues de agregar un turno no se puede agregar el turno de la otra cancha, misma fecha y horario hasta que no se recarga la pagina</li>
+          <li>Una vez creado el turno en la primera cancha, cuando quieren agregar turno en la segunda cancha, el id de cancha que trae el front es 1 tambien. Al tener este comportamiento, guarda los dos turnos con valor de cancha 1. Si borro el que figura primero, el que estaba en la segunda columna se mueve hacia la primera despues de recargar</li>
+          <li></li>
+
+        </ol>
         {View === 1 ? <ShiftsView/> : <ClientsView/>}
       </Provider>
     </Fragment>

@@ -24,7 +24,7 @@ export default function TableShifts(props) {
     const loadClients = () => dispatch(getClientsAction());
     loadClients();
     //eslint-disable-next-line
-  }, [])
+  }, [shifts])
 
   return (
     <Fragment>
@@ -50,6 +50,8 @@ export default function TableShifts(props) {
               <Shifts
                 hour = {hour}
                 shifts = {shifts}
+                arrayTime = {props.arrayTime}
+                dateSelected = {props.dateSelected}
               />
             </tr>
             

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import ModalShifts from './components/Shifts/ModalShifts';
 import TableShifts from './components/Shifts/TableShifts';
 
@@ -18,7 +18,6 @@ function ShiftsView() {
         var time = new Date();  
         time.setHours(start,0,0,0);
       
-                        //devuelve solo fecha y hora formateada
         arrayTime.push((time.getHours()<10?('0'+time.getHours()):time.getHours()) + ":" + (time.getMinutes()<10?('0'+time.getMinutes()):time.getMinutes()));
         
         var hours = time.getHours();
@@ -32,10 +31,25 @@ function ShiftsView() {
         
         return arrayTime;
     }
-      
     schedule();
-    
-    const[filterDate, setFilterDate] = useState((new Date()).toISOString().slice(0,10));
+ 
+    function addZeros(){
+        let arrayDate = new Date().toLocaleDateString().split("/").reverse();
+        let count = 0;
+        arrayDate.forEach(e => {
+            if(e <= 10){
+
+                e = "0"+ e;
+                arrayDate[count] = e;
+            }
+                
+            count++;
+        });
+        return arrayDate.join("-");
+
+    }
+
+    const[filterDate, setFilterDate] = useState(new Date());
     const handleDate = (e) => {
         setFilterDate(
             e.target.name= e.target.value
@@ -44,6 +58,14 @@ function ShiftsView() {
         dispatch(getShiftsAction(e.target.value))
     }
 
+    useEffect(() => {
+
+        let today = addZeros();
+        setFilterDate(today);
+        dispatch(getShiftsAction(today));
+
+    }, [])
+    
     return (  
         <Fragment>
             <h2 className='text-center'>Turnos</h2>
@@ -58,13 +80,10 @@ function ShiftsView() {
                             className='form-control'
                             onChange={handleDate} />
                     </div>
-                    <div className='col-12 my-3'>
-                        <ModalShifts arrayTime={arrayTime}></ModalShifts>
-                    </div>
                 </div>
             </div>
 
-            <TableShifts arrayTime={arrayTime}></TableShifts>
+            <TableShifts arrayTime={arrayTime} dateSelected={filterDate}></TableShifts>
         </Fragment>
     );
 }

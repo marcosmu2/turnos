@@ -4,7 +4,14 @@ import {
     ADD_SHIFT_ERROR,
     GET_SHIFTS_BY_DATE,
     GET_SHIFTS_BY_DATE_SUCCESS,
-    GET_SHIFTS_BY_DATE_ERROR
+    GET_SHIFTS_BY_DATE_ERROR,
+    GET_SHIFT_DELETED,
+    DELETE_SHIFT_SUCCESS,
+    DELETE_SHIFT_ERROR,
+    GET_SHIFT_UPDATE,
+    START_UPDATE_SHIFT,
+    UPDATE_SHIFT_SUCCESS,
+    UPDATE_SHIFT_ERROR
 } from '../types';
 
 const initialState = {
@@ -13,6 +20,7 @@ const initialState = {
     entitiesName: 'Cancha',
     start: 8,
     end: 23,
+    date: "2022-07-21",
     loading: false,
     error: null,
     shiftDelete: null,
@@ -34,6 +42,7 @@ export default function shiftReducer(state = initialState, action){
             }
         case ADD_SHIFT_ERROR:
         case GET_SHIFTS_BY_DATE_ERROR:
+        case DELETE_SHIFT_ERROR:
             return{
                 ...state,
                 loading: false,
@@ -46,6 +55,17 @@ export default function shiftReducer(state = initialState, action){
                 error: null,
                 shifts: action.payload
             } 
+        case GET_SHIFT_DELETED:
+            return{
+                ...state,
+                shiftUpdate: action.payload
+            }
+        case DELETE_SHIFT_SUCCESS:
+            return{
+                ...state,
+                shifts: state.shifts.filter( shift => shift._id !== state.shiftDelete),
+                shiftDelete: null
+            }
         default:
             return state;
     }

@@ -73,7 +73,7 @@ const getClientsError = () => ({
     payload: true
 })
 
-//DELETE PRODUCTS
+//DELETE CLIENTS
 
 export function deleteClientsAction(id){
     return async (dispatch) =>{

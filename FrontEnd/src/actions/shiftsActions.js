@@ -4,9 +4,16 @@ import {
     ADD_SHIFT_ERROR,
     GET_SHIFTS_BY_DATE,
     GET_SHIFTS_BY_DATE_SUCCESS,
-    GET_SHIFTS_BY_DATE_ERROR
+    GET_SHIFTS_BY_DATE_ERROR,
+    GET_SHIFT_DELETED,
+    DELETE_SHIFT_SUCCESS,
+    DELETE_SHIFT_ERROR,
+    GET_SHIFT_UPDATE,
+    START_UPDATE_SHIFT,
+    UPDATE_SHIFT_SUCCESS,
+    UPDATE_SHIFT_ERROR
 } from '../types';
-import clienteAxiosShifts from '../config/axiosShifts';
+import AxiosShifts from '../config/axiosShifts';
 
 //Crear turno
 export function addNewShiftAction(shift){
@@ -14,7 +21,7 @@ export function addNewShiftAction(shift){
 
         dispatch(addShift());
         try {
-            await clienteAxiosShifts.post('/new', shift);
+            await AxiosShifts.post('/new', shift);
             console.log(shift) 
             dispatch(addShiftSuccess(shift));
         } catch (error) {
@@ -45,7 +52,7 @@ export function getShiftsAction(date){
         dispatch(getShifts());
 
         try {
-            const response = await clienteAxiosShifts.get(`?date=${date}`);
+            const response = await AxiosShifts.get(`?date=${date}`);
             dispatch(getShiftsSuccess(response.data));
         } catch (error) {
             console.log(error);
@@ -65,5 +72,33 @@ const getShiftsSuccess = (shifts) => ({
 })
 const getShiftsError = () => ({
     type: GET_SHIFTS_BY_DATE_ERROR,
+    payload: true
+})
+
+//DELETE SHIFTS
+
+export function deleteShiftsAction(id){
+    return async (dispatch) =>{
+        dispatch (getShiftDeleted(id));
+        try {
+            await AxiosShifts.delete(`/delete?id=${id}`)
+            dispatch(deleteShiftSuccess())
+        } catch (error) {
+            console.log(error);
+            dispatch(deleteShiftError())
+        }
+    }
+}
+
+const getShiftDeleted = id => ({
+    type: GET_SHIFT_DELETED,
+    payload: id
+})
+const deleteShiftSuccess = () => ({
+    type: DELETE_SHIFT_SUCCESS,
+    // payload: 
+})
+const deleteShiftError = () => ({
+    type: DELETE_SHIFT_ERROR,
     payload: true
 })

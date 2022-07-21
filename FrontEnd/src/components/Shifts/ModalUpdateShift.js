@@ -1,4 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import ModalDeleteShift from './ModalDeleteShift';
+
 
 import { useDispatch, useSelector } from 'react-redux';
 import { addNewShiftAction } from '../../actions/shiftsActions';
@@ -33,8 +36,9 @@ export default function ModalShifts(props) {
 
     //State combobox horario entrada
     const [checkIn, setCheckIn] = useState('seleccion')
-    const [fixed, setFixed] = useState(null);
+    const [fixed, setFixed] = useState(false);
     // const [clients, setClient] = useState([]);
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);  
 
     const dispatch = useDispatch();
 
@@ -45,26 +49,11 @@ export default function ModalShifts(props) {
     const [selectedEntity, setSelectedEntity] = useState('seleccion');
     const [options, setOptions] = useState([]);
 
-    // var options = [];
-    // for (var i = 1; i < entities+1; i++) {
-    //     options.push(<option 
-    //         key={i}
-    //         value={i}>{entitiesName} {i}
-    //     </option>);
-    // }
-
     const [idClient, setIdClient] = useState('seleccion')
-    const [clientName, setClientName] = useState('')
 
-    // const handleClientName = (e) => {
-    //     setClientName(
-    //         e.target.name= e.target.value
-    //     )
-        
-    // }
     //State modal
     const [open, setOpen] = useState(props.state);
-    const handleOpen = () => setOpen(true);
+    // const handleOpen = () => setOpen(true);
     const handleClose = () => {
         setOpen(false);
         props.handleModal(false);
@@ -88,7 +77,7 @@ export default function ModalShifts(props) {
 
     //State para llenar el valor de la salida
     const [newTime, setNewTime] = useState('')
-    const [phone, setPhone] = useState('')
+    const [phone, setPhone] = useState("")
     
     function horario(time){
 
@@ -135,7 +124,6 @@ export default function ModalShifts(props) {
             addShift({
                 idCancha: selectedEntity,
                 client: idClient,
-                clientName: clientName,
                 horaEntrada: checkIn,
                 horaSalida: newTime,
                 diaFijo: weekDay.getDay(),
@@ -147,7 +135,6 @@ export default function ModalShifts(props) {
                 fecha: date,
                 idCancha: selectedEntity,
                 client: idClient,
-                clientName: clientName,
                 horaEntrada: checkIn,
                 horaSalida: newTime
             }
@@ -160,7 +147,6 @@ export default function ModalShifts(props) {
         setNewTime('');
         setPhone("");
         setDate('');
-        // dispatch(getShiftsAction(today))
     }
 
     useEffect(() => {
@@ -172,15 +158,22 @@ export default function ModalShifts(props) {
         }
 
         setOptions(opciones2);
-
+        if(props.shiftSelected.diaFijo === null || props.shiftSelected.diaFijo === undefined){
+            setFixed(false);
+        }else{
+            setFixed(true);
+        }
         setDate(props.dateSelected);
-        setSelectedEntity(props.entityId);
-        setCheckIn(props.hour);
-        horario(props.hour);
+        setCheckIn(props.shiftSelected.horaEntrada);
+        setNewTime(props.shiftSelected.horaSalida);
+        setIdClient(props.shiftSelected.client._id)
+        setPhone(props.shiftSelected.client.phone);
+        setSelectedEntity(props.shiftSelected.idCancha);
+
     }, [])
     
 
-  return (
+  return createPortal(
     <Fragment>
         {/* <button className='btn btn-primary' onClick={handleOpen}>Reservar Turno</button> */}
             {open === false ? null : 
@@ -196,11 +189,11 @@ export default function ModalShifts(props) {
                                 onClick={handleClose}>x
                             </button>
                         </div> 
-                        <form 
-                            onSubmit={handleSubmit} 
+                        <div 
+                            // onSubmit={handleSubmit} 
                             className='container'
                         >
-                            <h4 className="text-center mt-4">Reservar Turno</h4>
+                            <h4 className="text-center mt-4">Editar Turno</h4>
                             <div className='row mb-3'>
                                 <div className='col-6'>
                                     <label htmlFor="fixed">Es Turno Fijo:</label>
@@ -210,6 +203,7 @@ export default function ModalShifts(props) {
                                         type="checkbox" 
                                         id='fixed'
                                         name={fixed}
+                                        checked={fixed}
                                         onChange={e => setFixed(e.target.checked)}
                                     />
                                 </div>
@@ -224,7 +218,6 @@ export default function ModalShifts(props) {
                                         value={date}
                                         className='form-control'
                                         onChange={handleDate}
-                                        disabled
                                     />
                                 </div>
                                 <div className='col-12 mt-1'>
@@ -249,8 +242,7 @@ export default function ModalShifts(props) {
                                         className='form-control'
                                         // defaultValue="seleccion"
                                         value={checkIn}
-                                        onChange={(e) => {setCheckIn(e.target.value); horario(e.target.value);}}
-                                        disabled>
+                                        onChange={(e) => {setCheckIn(e.target.value); horario(e.target.value);}}>
                                         <option value="seleccion">Seleccione</option>
                                         {props.arrayTime.map((entrada) =>(
                                             <option 
@@ -279,13 +271,13 @@ export default function ModalShifts(props) {
                                         name="select"
                                         id="name"
                                         className='form-control mb-2'
-                                        defaultValue="seleccion"
-                                        onChange={(e) => {setIdClient(e.target.value); setClientName(e.target.options[e.target.selectedIndex].text); phoneClient(e.target.value)}}>
+                                        // defaultValue="seleccion"
+                                        value={idClient}
+                                        onChange={(e) => {setIdClient(e.target.value); phoneClient(e.target.value)}}>
                                         <option value="seleccion">Seleccione</option>
                                         {clients.map((client) =>(
                                             <option 
                                                 key={client._id}
-                                                name={client.name}
                                                 value={client._id}>{client.name}
                                             </option>
                                         ))}
@@ -303,15 +295,18 @@ export default function ModalShifts(props) {
                                     />
                                 </div>
                             </div>
-                            <div className='d-flex justify-content-end mt-2'>
-                                <button className="btn btn-primary" type="submit">Reservar</button>
+                            <div className='d-flex justify-content-start mt-2'>
+                                <button className="btn btn-danger" onClick={() => setOpenDeleteModal(true)}>Borrar</button>
+                                <button className="btn btn-primary ms-2" /*type="submit"*/ onClick={handleSubmit}>Reservar</button>
                                 <button className="btn btn-danger ms-2" onClick={handleClose}>Cancelar</button>
                             </div>
                             
-                        </form>
+                        </div>
                     </div>  
                 </div>
             }
-    </Fragment>
+            {openDeleteModal === true ? <ModalDeleteShift state={openDeleteModal} handleModal={setOpenDeleteModal} handleModalUpdate={setOpen} id={props.shiftSelected._id}></ModalDeleteShift> : null}
+    </Fragment>,
+    document.getElementById('portal')
   );
 }
