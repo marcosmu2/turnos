@@ -2,6 +2,10 @@ const {response } =  require('express');
 const Turnos = require('../models/Turnos');
 const { errorReturn } = require('../functions/errorReturnFn');
 
+const horarios =  ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30", "17:00", "18:30", "20:00", "21:30", "23:00"];
+
+const canchas = 2; 
+
 const createTurno = async( req, res = response ) => {
 
     if (req.body.horaEntrada === undefined){
@@ -44,6 +48,8 @@ const createTurno = async( req, res = response ) => {
 }
 
 const getTurnosByDate= async( req, res = response ) => {
+
+
     
     try {
         
@@ -58,8 +64,10 @@ const getTurnosByDate= async( req, res = response ) => {
         const turnosDia = await Turnos.find({fecha : dateInp }).populate('client');
 
         const turnosOut = turnosDia.concat(turnosFijosFilter);
+
+        const output = buildArray(turnosOut); 
     
-        res.status(200).json(turnosOut);
+        res.status(200).json(output);
 
     } catch (error) {
         errorReturn(res, error);
@@ -181,4 +189,25 @@ module.exports = {
     getTurnosByDate,
     updateTurno,
     deleteTurno
+}
+
+buildArray = (turnos) => {
+
+    let result = [];
+
+    horarios.forEach(  horario => {
+
+        let horarioArray = [horario]
+
+        for (let i = 0; i < canchas; i++) {
+            const turno = turnos.find( turno => turno.horaEntrada === horario && turno.idCancha === (i+1))
+            horarioArray = ( turno ) ? [...horarioArray, turno] : [...horarioArray, null]
+        }
+
+        result.push(horarioArray)
+
+    });
+
+    return result;
+
 }
