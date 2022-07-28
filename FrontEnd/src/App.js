@@ -49,7 +49,9 @@ function App() {
         
         <h1>Falta por hacer</h1>
         <ol>
-          <li>Armar reducer para cambiar la fecha</li>
+          {/* <li>Armar reducer para cambiar la fecha</li> */}
+          <li>Probar el metodo del array que hablamos con marcos en el bar, tener un array grande aunque sea harcodeado que traiga en cada elemento horario, idcancha y turno. Uno por cada horario y turno que tenga el dia. PAra hacer un solo map en el render de los botones</li>
+          <li>Pasar por store el array de horas</li>
           <li>Recargar la tabla cuando cambie el store de turnos, para que se vea el cambio reflejado (editar, eliminar)</li>
           <li>Probar que la edicion funcione bien</li>
           <li>Cuando se pruebe el editar, revisar si el back devuelve un error y mostrarlo en el modal</li>
@@ -58,6 +60,7 @@ function App() {
         
         <h1>Errores</h1>
         <ol>
+          <li>El back devuelve un error cuando el turno quiere pasar de turno comun a turno fijo</li>
           <li>Borro el turno de la cancha 2, cuando quiero borrar el turno de la cancha uno en el mismo dia y horario no me deja. ME deja tocar en gregar turno en las otras filas</li>
           <li>Creo turno cancha dos, recargo pagina, creo turno cancha uno mismo dia y hora se crea un botón de "agregar" entre el primero y seundo turno, el valor de la cancha figura como 1 dentro de ese Agregar,se desplaza al segundo turno a una 3ra "columna"</li>
           <li>Despues de agregar un turno no se puede agregar el turno de la otra cancha, misma fecha y horario hasta que no se recarga la pagina</li>

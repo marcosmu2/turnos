@@ -4,7 +4,7 @@ import ModalDeleteShift from './ModalDeleteShift';
 
 
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewShiftAction } from '../../actions/shiftsActions';
+import { updateShiftAction } from '../../actions/shiftsActions';
 
 const style = {
     modal:{
@@ -42,14 +42,18 @@ export default function ModalShifts(props) {
 
     const dispatch = useDispatch();
 
-    const clients = useSelector( state => state.clients.clients)
+    const clients = useSelector( state => state.clients.clients);
 
-    const entitiesName = useSelector( state => state.shifts.entitiesName)
-    const entities = useSelector( state => state.shifts.entities)
+    const entitiesName = useSelector( state => state.shifts.entitiesName);
+    const entities = useSelector( state => state.shifts.entities);
+    const dateStore = useSelector( state => state.shifts.date);
+    const arrayTime = useSelector( state => state.shifts.arrayTime);
+
     const [selectedEntity, setSelectedEntity] = useState('seleccion');
     const [options, setOptions] = useState([]);
 
     const [idClient, setIdClient] = useState('seleccion')
+    const [idShift, setIdShift] = useState(props.shiftSelected._id)
 
     //State modal
     const [open, setOpen] = useState(props.state);
@@ -65,7 +69,7 @@ export default function ModalShifts(props) {
         setDate('')
     }
     
-    const [date, setDate] = useState("")
+    const [date, setDate] = useState(dateStore)
     const handleDate = (e) => {
         setDate(
             e.target.name= e.target.value
@@ -113,7 +117,7 @@ export default function ModalShifts(props) {
         }
     }
     let completeShift;
-    const addShift = (completeShift) => dispatch( addNewShiftAction(completeShift) );
+    // const addShift = (completeShift) => dispatch( updateShiftAction(completeShift) );
     //SUBMIT
     const handleSubmit = e => {
         e.preventDefault();
@@ -121,7 +125,8 @@ export default function ModalShifts(props) {
 
         if(fixed === true){
             
-            addShift({
+            completeShift={
+                _id: idShift,
                 idCancha: selectedEntity,
                 client: idClient,
                 horaEntrada: checkIn,
@@ -129,18 +134,17 @@ export default function ModalShifts(props) {
                 diaFijo: weekDay.getDay(),
                 fechaInicioFijo: date
             }
-            )
         }else{
-            addShift({
+            completeShift={
+                _id: idShift,
                 fecha: date,
                 idCancha: selectedEntity,
                 client: idClient,
                 horaEntrada: checkIn,
                 horaSalida: newTime
             }
-            )
         }
-        
+        /*const addShift = (completeShift) => */dispatch( updateShiftAction(completeShift) );
         setOpen(false);
         setShift({});
         setCheckIn("seleccion"); 
@@ -163,7 +167,7 @@ export default function ModalShifts(props) {
         }else{
             setFixed(true);
         }
-        setDate(props.dateSelected);
+        
         setCheckIn(props.shiftSelected.horaEntrada);
         setNewTime(props.shiftSelected.horaSalida);
         setIdClient(props.shiftSelected.client._id)
@@ -244,7 +248,7 @@ export default function ModalShifts(props) {
                                         value={checkIn}
                                         onChange={(e) => {setCheckIn(e.target.value); horario(e.target.value);}}>
                                         <option value="seleccion">Seleccione</option>
-                                        {props.arrayTime.map((entrada) =>(
+                                        {arrayTime.map((entrada) =>(
                                             <option 
                                                 key={entrada}
                                                 value={entrada}>{entrada}
@@ -297,7 +301,7 @@ export default function ModalShifts(props) {
                             </div>
                             <div className='d-flex justify-content-start mt-2'>
                                 <button className="btn btn-danger" onClick={() => setOpenDeleteModal(true)}>Borrar</button>
-                                <button className="btn btn-primary ms-2" /*type="submit"*/ onClick={handleSubmit}>Reservar</button>
+                                <button className="btn btn-primary ms-2" onClick={handleSubmit}>Editar</button>
                                 <button className="btn btn-danger ms-2" onClick={handleClose}>Cancelar</button>
                             </div>
                             

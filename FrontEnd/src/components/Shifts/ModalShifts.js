@@ -42,6 +42,9 @@ export default function ModalShifts(props) {
 
     const entitiesName = useSelector( state => state.shifts.entitiesName)
     const entities = useSelector( state => state.shifts.entities)
+    const dateStore = useSelector(state => state.shifts.date);
+    const arrayTime = useSelector(state => state.shifts.arrayTime);
+    
     const [selectedEntity, setSelectedEntity] = useState('seleccion');
     const [options, setOptions] = useState([]);
 
@@ -76,7 +79,7 @@ export default function ModalShifts(props) {
         setDate('')
     }
     
-    const [date, setDate] = useState("")
+    const [date, setDate] = useState(dateStore)
     const handleDate = (e) => {
         setDate(
             e.target.name= e.target.value
@@ -124,7 +127,7 @@ export default function ModalShifts(props) {
         }
     }
     let completeShift;
-    const addShift = (completeShift) => dispatch( addNewShiftAction(completeShift) );
+    const addShift = (completeShift) => dispatch( addNewShiftAction(completeShift, dateStore) );
     //SUBMIT
     const handleSubmit = e => {
         e.preventDefault();
@@ -173,7 +176,6 @@ export default function ModalShifts(props) {
 
         setOptions(opciones2);
 
-        setDate(props.dateSelected);
         setSelectedEntity(props.entityId);
         setCheckIn(props.hour);
         horario(props.hour);
@@ -252,7 +254,7 @@ export default function ModalShifts(props) {
                                         onChange={(e) => {setCheckIn(e.target.value); horario(e.target.value);}}
                                         disabled>
                                         <option value="seleccion">Seleccione</option>
-                                        {props.arrayTime.map((entrada) =>(
+                                        {arrayTime.map((entrada) =>(
                                             <option 
                                                 key={entrada}
                                                 value={entrada}>{entrada}
